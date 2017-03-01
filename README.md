@@ -17,7 +17,7 @@ public class HelloWorld{public static void main(String args[]){if(true){while(tr
 Flattened:
 (MethodDeclaration (FormalParameter(ReferenceType))(IfStatement(Literal)(BlockStatement (WhileStatement(Literal)(BlockStatement)))(BlockStatement)))
 
-Expanded:
+Expanded (manually):
 (MethodDeclaration 
 	(FormalParameter
 		(ReferenceType)
