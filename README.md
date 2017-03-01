@@ -12,6 +12,8 @@ Note:
 
 Example:
 ```
+$ python mokuton.py
+
 public class HelloWorld{public static void main(String args[]){if(true){while(true){}}else{}}}
 
 Flattened:
