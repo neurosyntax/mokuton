@@ -1,4 +1,4 @@
-# MOKUTON NO JUTSU!!! [senju](./images/Senju.gif)
+# MOKUTON NO JUTSU!!! ![senju](./images/Senju.gif)
 
 Generates abstract syntax trees from function source code and then inserts it and the input types and output types back into MongoDB.
 
