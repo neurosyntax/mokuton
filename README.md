@@ -10,4 +10,29 @@ Note:
 - All strings are returned as unicode
 - javalang parser expects a syntactically correct class, so need a class template to place functions into.
 
+Example:
+```
+public class HelloWorld{public static void main(String args[]){if(true){while(true){}}else{}}}
+
+Flattened:
+(MethodDeclaration (FormalParameter(ReferenceType))(IfStatement(Literal)(BlockStatement (WhileStatement(Literal)(BlockStatement)))(BlockStatement)))
+
+Expanded:
+(MethodDeclaration 
+	(FormalParameter
+		(ReferenceType)
+	)
+	(IfStatement
+		(Literal)
+		(BlockStatement
+			(WhileStatement
+				(Literal)
+				(BlockStatement)
+			)
+		)
+		(BlockStatement)
+	)
+)
+```
+
 ### MOKUTON NO JUTSU!!! ![senju](./images/Senju.gif)
