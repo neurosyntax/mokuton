@@ -12,11 +12,10 @@ Note:
 
 Example:
 ```
+Given "public class HelloWorld{public static void main(String args[]){if(true){while(true){}}else{}}}"
+
 $ python mokuton.py
 
-public class HelloWorld{public static void main(String args[]){if(true){while(true){}}else{}}}
-
-Flattened:
 (MethodDeclaration (FormalParameter(ReferenceType))(IfStatement(Literal)(BlockStatement (WhileStatement(Literal)(BlockStatement)))(BlockStatement)))
 
 Expanded (manually):
