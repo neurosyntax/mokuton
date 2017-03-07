@@ -14,6 +14,7 @@ Example:
 ```
 Given 'public class HelloWorld{public static int findFirst(int value, int idx) { value &= ~((1 << idx) - 1); int result = Integer.numberOfTrailingZeros(value);        return (result == 32) ? -1 : result;}}'
 
+Expanded (manually):
 public class HelloWorld
 {
 	public static int findFirst(int value, int idx) 
@@ -69,5 +70,3 @@ Expanded (manually):
 	(BasicType)
 )
 ```
-
-### MOKUTON NO JUTSU!!! ![senju](./images/Senju.gif)
