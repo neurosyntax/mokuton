@@ -13,15 +13,14 @@
 	
 	Note:
 	- All strings are returned as unicode
-	- Parser expects a syntactically correct class, so need a class template to place functions into.
+	- Parser expects a syntactically correct class, so need a class template (using HelloWorld in this example) to place functions into.
 
 '''
 
 import javalang
 from ast import nodes
 
-code = "public class HelloWorld{public static void main(String args[]){if(true){while(true){}}else{}}}"
-# code = 'public class Hello{public static int compare(long v1, long v2) {        return v1 < v2 ? -1 : (v1 > v2 ? 1 : 0);    }}'
+code = 'public class HelloWorld{public static int findFirst(int value, int idx) { value &= ~((1 << idx) - 1); int result = Integer.numberOfTrailingZeros(value);        return (result == 32) ? -1 : result;}}'
 tree = javalang.parse.parse(code)
 
 
@@ -29,9 +28,9 @@ def flatTree(tree):
 	sub = '('+str(tree)+' '
 	leaves = ''
 	for n in tree.children:
-		if type(n) == type(list()) and len(n) > 0 and str(n[0]) in nodes:
-			sub += flatTree(n[0])
-			# print sub
+		if type(n) == type(list()) and len(n) > 0 and (str(n[0]) in nodes or str(n) in nodes):
+			for e in n:
+				sub += flatTree(e)
 		elif str(n) in nodes:
 			leaves += flatTree(n)
 	return sub.strip()+leaves.strip()+')'
