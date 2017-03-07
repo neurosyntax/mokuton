@@ -12,7 +12,17 @@ Note:
 
 Example:
 ```
-Given "public class HelloWorld{public static void main(String args[]){if(true){while(true){}}else{}}}"
+Given 'public class HelloWorld{public static int findFirst(int value, int idx) { value &= ~((1 << idx) - 1); int result = Integer.numberOfTrailingZeros(value);        return (result == 32) ? -1 : result;}}'
+
+public class HelloWorld
+{
+	public static int findFirst(int value, int idx) 
+	{
+		value &= ~((1 << idx) - 1);
+		int result = Integer.numberOfTrailingZeros(value);
+		return (result == 32) ? -1 : result;
+	}
+}
 
 $ python mokuton.py
 
@@ -21,18 +31,42 @@ $ python mokuton.py
 Expanded (manually):
 (MethodDeclaration 
 	(FormalParameter
-		(ReferenceType)
+		(BasicType)
 	)
-	(IfStatement
-		(Literal)
-		(BlockStatement
-			(WhileStatement
+	(FormalParameter
+		(BasicType)
+	)
+	(StatementExpression
+		(Assignment
+			(MemberReference)
+			(BinaryOperation
+				(BinaryOperation
+					(Literal)
+					(MemberReference)
+				)
 				(Literal)
-				(BlockStatement)
 			)
 		)
-		(BlockStatement)
 	)
+	(LocalVariableDeclaration
+		(VariableDeclarator
+			(MethodInvocation
+				(MemberReference)
+			)
+		)
+		(BasicType)
+	)
+	(ReturnStatement
+		(TernaryExpression
+			(BinaryOperation
+				(MemberReference)
+				(Literal)
+			)
+			(Literal)
+			(MemberReference)
+		)
+	)
+	(BasicType)
 )
 ```
 
