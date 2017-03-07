@@ -8,7 +8,7 @@ Refer to https://docs.mongodb.com/getting-started/python/client/ for more info o
 
 Note:
 - All strings are returned as unicode
-- javalang parser expects a syntactically correct class, so need a class template to place functions into.
+- javalang parser expects a syntactically correct class, so need a class template to place functions into (using HelloWorld in example below).
 
 Example:
 ```
