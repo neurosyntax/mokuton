@@ -45,9 +45,9 @@ def generateAST(tree):
 	for n in tree.children:
 		if type(n) == type(list()) and len(n) > 0 and (str(n[0]) in nodes or str(n) in nodes):
 			for e in n:
-				sub += flatTree(e)
+				sub += generateAST(e)
 		elif str(n) in nodes:
-			leaves += flatTree(n)
+			leaves += generateAST(n)
 	return sub.strip()+leaves.strip()+')'
 
 # Inject function source into template to satisfy javalang module
