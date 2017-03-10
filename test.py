@@ -4,8 +4,6 @@
 
 	Generates abstract syntax trees from function source code and then inserts it and the 
 	input types and output types back into MongoDB.
-	
-	MOKUTON NO JUTSU!!!
 
 	Dependencies: javalang, pymongo
 
@@ -20,12 +18,32 @@
 import javalang
 from ast import nodes
 
-code = 'public class HelloWorld{public static int findFirst(int value, int idx) { value &= ~((1 << idx) - 1); int result = Integer.numberOfTrailingZeros(value);        return (result == 32) ? -1 : result;}}'
+# code = 'public class HelloWorld{public static int findFirst(int value, int idx) { value &= ~((1 << idx) - 1); int result = Integer.numberOfTrailingZeros(value);        return (result == 32) ? -1 : result;}}'
+code = 'public class HelloWorld{public static float add(int a, int b){a+=5; return 3.14;}}'
 tree = javalang.parse.parse(code)
 
+# Convert string to numeric
+def num(s):
+	try:
+		return int(s)
+	except ValueError:
+		try:
+			return float(s)
+		except ValueError:
+			return s
+
+def getLiteral(vals):
+	for v in vals:
+		if isinstance(v, basestring):
+			return type(num(v)).__name__
 
 def flatTree(tree):
-	sub = '('+str(tree)+' '
+	# if str(tree) == 'BasicType':
+		# print tree.children
+	if str(tree) == 'Literal':
+		sub = '('+getLiteral(tree.children)+' '
+	else:
+		sub = '('+str(tree)+' '
 	leaves = ''
 	for n in tree.children:
 		if type(n) == type(list()) and len(n) > 0 and (str(n[0]) in nodes or str(n) in nodes):
