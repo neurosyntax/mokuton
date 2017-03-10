@@ -38,8 +38,6 @@ def getLiteral(vals):
 			return type(num(v)).__name__
 
 def flatTree(tree):
-	# if str(tree) == 'BasicType':
-		# print tree.children
 	if str(tree) == 'Literal':
 		sub = '('+getLiteral(tree.children)+' '
 	else:
