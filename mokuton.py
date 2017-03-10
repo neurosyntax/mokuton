@@ -82,7 +82,7 @@ def createLabel(intype, outtype):
 
 # Vectorize AST
 def vectorize(tree):
-
+	return tree
 
 if __name__ == "__main__":
 	# True  = function AST excluding template
