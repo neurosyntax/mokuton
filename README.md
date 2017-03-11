@@ -12,25 +12,26 @@ Note:
 
 Example:
 ```
-Given 'public class HelloWorld{public static int findFirst(int value, int idx) { value &= ~((1 << idx) - 1); int result = Integer.numberOfTrailingZeros(value);        return (result == 32) ? -1 : result;}}'
+Given 'public class HelloWorld{public static float add(int a, int b){a+=5; return 3.14;}}'
 
-Expanded (manually):
+Expanded manually:
 public class HelloWorld
 {
-	public static int findFirst(int value, int idx) 
+	public static float add(int a, int b)
 	{
-		value &= ~((1 << idx) - 1);
-		int result = Integer.numberOfTrailingZeros(value);
-		return (result == 32) ? -1 : result;
+		a+=5;
+		return 3.14;
 	}
 }
 
 $ python mokuton.py
 
-(MethodDeclaration (FormalParameter(ReferenceType))(IfStatement(Literal)(BlockStatement (WhileStatement(Literal)(BlockStatement)))(BlockStatement)))
+# AST
+(MethodDeclaration(BasicType)(FormalParameter(BasicType))(FormalParameter(BasicType))(StatementExpression(Assignment(MemberReference)(int)))(ReturnStatement(float)))
 
-Expanded (manually):
-(MethodDeclaration 
+# Expanded manually:
+(MethodDeclaration
+	(BasicType)
 	(FormalParameter
 		(BasicType)
 	)
@@ -40,33 +41,14 @@ Expanded (manually):
 	(StatementExpression
 		(Assignment
 			(MemberReference)
-			(BinaryOperation
-				(BinaryOperation
-					(Literal)
-					(MemberReference)
-				)
-				(Literal)
+				(int)
 			)
 		)
-	)
-	(LocalVariableDeclaration
-		(VariableDeclarator
-			(MethodInvocation
-				(MemberReference)
-			)
-		)
-		(BasicType)
-	)
 	(ReturnStatement
-		(TernaryExpression
-			(BinaryOperation
-				(MemberReference)
-				(Literal)
-			)
-			(Literal)
-			(MemberReference)
-		)
+		(float)
 	)
-	(BasicType)
 )
+
+# Vectorized AST
+['84', '49', '84', '8', '85', '84', '36', '84', '8', '85', '85', '84', '36', '84', '8', '85', '85', '84', '57', '84', '7', '84', '48', '85', '84', '77', '85', '85', '85', '84', '55', '84', '79', '85', '85', '85']
 ```

@@ -16,7 +16,9 @@
 '''
 
 import javalang
+import collections
 from ast import nodes
+from ast import nodeVect
 
 # code = 'public class HelloWorld{public static int findFirst(int value, int idx) { value &= ~((1 << idx) - 1); int result = Integer.numberOfTrailingZeros(value);        return (result == 32) ? -1 : result;}}'
 code = 'public class HelloWorld{public static float add(int a, int b){a+=5; return 3.14;}}'
@@ -37,20 +39,41 @@ def getLiteral(vals):
 		if isinstance(v, basestring):
 			return type(num(v)).__name__
 
-def flatTree(tree):
+def generateAST(tree):
+	sub = []
 	if str(tree) == 'Literal':
-		sub = '('+getLiteral(tree.children)+' '
+		sub.append(str('('))
+		sub.append(str(getLiteral(tree.children)))
 	else:
-		sub = '('+str(tree)+' '
+		sub.append(str('('))
+		# sub.append(str(nodeVect[str(tree)]))
+		sub.append(str(tree))
 	leaves = ''
 	for n in tree.children:
 		if type(n) == type(list()) and len(n) > 0 and (str(n[0]) in nodes or str(n) in nodes):
 			for e in n:
-				sub += flatTree(e)
+				sub.append(generateAST(e))
 		elif str(n) in nodes:
-			leaves += flatTree(n)
-	return sub.strip()+leaves.strip()+')'
+			sub.append(generateAST(n))
+	sub.append(leaves.strip())
+	# sub.append(str(nodeVect[')']))
+	sub.append(str(')'))
+	return sub
+
+def flatten(l):
+	for el in l:
+		if isinstance(el, collections.Iterable) and not isinstance(el, basestring):
+			for sub in flatten(el):
+				yield sub
+		else:
+			yield el
+
+def vectorize(tree):
+	for i, t in enumerate(tree):
+		tree[i] = nodeVect[t]
+	return tree
 
 if __name__ == "__main__":
-	# This bit assumes the tree returned contains 
-	print '('+'('.join(flatTree(tree).split('(')[3:])[:-2]
+	# This bit assumes the tree returned contains  
+	vec = list(flatten(generateAST(tree)))
+	print vectorize([v for v in vec if len(v) > 0][4:][:-2])

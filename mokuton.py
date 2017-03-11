@@ -15,9 +15,17 @@
 '''
 
 import javalang
+import collections
 from ast         import nodes
+from ast 		 import nodeVect
 from pymongo     import MongoClient
 from collections import Counter
+
+# True  = function AST excluding template
+# False = AST including the template
+funcOnly = True
+makeVect = True
+saveBoth = True
 
 # Convert string to numeric
 def num(s):
@@ -29,26 +37,47 @@ def num(s):
 		except ValueError:
 			return s
 
+# Get string of type of literal
 def getLiteral(vals):
 	for v in vals:
 		if isinstance(v, basestring):
 			return type(num(v)).__name__
 
+# Recursively construct AST
 def generateAST(tree):
-	# if str(tree) == 'BasicType':
-		# print tree.children
+	sub = []
 	if str(tree) == 'Literal':
-		sub = '('+getLiteral(tree.children)+' '
+		sub.append(str('('))
+		sub.append(str(getLiteral(tree.children)))
 	else:
-		sub = '('+str(tree)+' '
+		sub.append(str('('))
+		sub.append(str(tree))
 	leaves = ''
 	for n in tree.children:
 		if type(n) == type(list()) and len(n) > 0 and (str(n[0]) in nodes or str(n) in nodes):
 			for e in n:
-				sub += generateAST(e)
+				sub.append(generateAST(e))
 		elif str(n) in nodes:
-			leaves += generateAST(n)
-	return sub.strip()+leaves.strip()+')'
+			sub.append(generateAST(n))
+	sub.append(leaves.strip())
+	sub.append(str(')'))
+	return sub
+
+# Flatten AST
+def flatten(l):
+	for el in l:
+		if isinstance(el, collections.Iterable) and not isinstance(el, basestring):
+			for sub in flatten(el):
+				yield sub
+		else:
+			yield el
+			
+# Vectorize AST
+def vectorize(tree):
+	for i, t in enumerate(tree):
+		tree[i] = nodeVect[t]
+	return tree
+
 
 # Inject function source into template to satisfy javalang module
 def template(func):
@@ -80,15 +109,7 @@ def createLabel(intype, outtype):
 
 	return label
 
-# Vectorize AST
-def vectorize(tree):
-	return tree
-
 if __name__ == "__main__":
-	# True  = function AST excluding template
-	# False = AST including the template
-	funcOnly = True
-	vectOnly = False
 	# Defaults to localhost:27017
 	client = MongoClient()
 
@@ -111,7 +132,7 @@ if __name__ == "__main__":
 	# 			"header" : "public static int findFirst(int value, int idx)", 
 	# 			"intype" : [ "int", "int" ], 
 	# 			"outtype" : [ "int" ], 
-	# 			"source" : "public static int findFirst(int value, int idx) {        value &= ~((1 << idx) - 1); // Mask off too-low bits.        int result = Integer.numberOfTrailingZeros(value);        return (result == 32) ? -1 : result;    }" 
+	# 			"source" : "public static int findFirst(int value, int idx) {        value &= ~((1 << idx) - 1); int result = Integer.numberOfTrailingZeros(value);        return (result == 32) ? -1 : result;    }" 
 	# 		}
 	# 	]
 	# }
@@ -122,13 +143,19 @@ if __name__ == "__main__":
 			tree   = javalang.parse.parse(code)
 			sample = {'id':fnc['id'], 'intype': str(fnc['intype']), 'outtype': str(fnc['outtype']), 
 					  'label':createLabel(fnc['intype'], fnc['outtype'])}
+			
+			sample['ast'] = list(flatten(generateAST(tree)))
+			
+			# Remove empty strings, and nodes and parentheses from dumby class
 			if funcOnly:
-				sample['ast'] = extractFunc(generateAST(tree))
-			else:
-				sample['ast'] = generateAST(tree)
+				sample['ast'] = [v for v in sample['ast'] if len(v) > 0][4:][:-2]
 
-			if vectOnly:
-				sample['ast'] = vectorize(sample['ast'])
+			if saveBoth:
+				sample['ast']    = ''.join(sample['ast'])
+				sample['astvec'] = vectorize(sample['ast'])
+			elif makeVect:
+				sample['astvec'] = vectorize(sample['ast'])
+			else:
+				sample['ast'] = ''.join(sample['ast'])
 
 			db.AST.insert_one(sample)
-		break
