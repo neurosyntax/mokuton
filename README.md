@@ -63,6 +63,7 @@ $ python mokuton.py
 	"func_id" : 1138874885, 
 	"doc_id" : NumberLong("4152135009") 
 }
+```
 *_id* is the unique if for this document in the AST collection.
 *astvec* is the vectorized AST. Refer to ast.py for the AST nodes to integer mapping.
 *ast* is the actual AST.
@@ -73,22 +74,23 @@ $ python mokuton.py
 *doc_id* is the document containing the function this AST was generated from. Use this and the *func_id* to query the original source in the *source* MongoDB collection.
 
 Corresponding document in *source* collection:
+```
 { 
 	"_id" : NumberLong("4152135009"), 
 	"name" : "SloppyMath.java", 
 	"path" : "/media/ch3njus/Seagate4TB/research/neurosyntax/data/github/java/deeplearning4j/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/berkeley/SloppyMath.java", 
 	"funcs" : [ 
-				...
-				{ 
-					"id" : 1138874885, 
-					"name" : "max", 
-					"header" : "public static float max(float a, float b)", 
-					"intype" : [ "float", "float" ], 
-					"outtype" : [ "float" ], 
-					"source" : "public static float max(float a, float b) {    return (a >= b) ? a : b;  }" 
-				}
-				...
-			  ]
+			...
+			{ 
+				"id" : 1138874885, 
+				"name" : "max", 
+				"header" : "public static float max(float a, float b)", 
+				"intype" : [ "float", "float" ], 
+				"outtype" : [ "float" ], 
+				"source" : "public static float max(float a, float b) {    return (a >= b) ? a : b;  }" 
+			}
+			...
+			]
 }
 ```
 
@@ -96,6 +98,9 @@ Corresponding document in *source* collection:
 Vector label convention:
 The left seven indices represent the input function types and the right seven represent the output types.
 Each index position represents a data type and the integer at that position represents how many of those types are contained in the input or output. The represented types are as follows in this exact order for both the input (left seven indices) and output (right seven indices: 
+
 int, double, float, boolean, long short, byte.
+
 e.g. "label" : [ 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 ]
+
 This vector indicates that there are 2 floats in the input, and 1 float in the output.
