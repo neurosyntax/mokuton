@@ -64,14 +64,14 @@ $ python mokuton.py
 	"doc_id" : NumberLong("4152135009") 
 }
 ```
-*_id* is the unique if for this document in the AST collection.
-*astvec* is the vectorized AST. Refer to ast.py for the AST nodes to integer mapping.
-*ast* is the actual AST.
-*intype* contains the type(s) of the function's input
-*label* the label for training. Refer to the label section of this README for more info.
-*outtype* contains the type(s) of the function's output
-*func_id* is the unique id of the function this AST was generated from.
-*doc_id* is the document containing the function this AST was generated from. Use this and the *func_id* to query the original source in the *source* MongoDB collection.
+* *_id* is the unique if for this document in the AST collection.
+* *astvec* is the vectorized AST. Refer to ast.py for the AST nodes to integer mapping.
+* *ast* is the actual AST.
+* *intype* contains the type(s) of the function's input
+* *label* the label for training. Refer to the label section of this README for more info.
+* *outtype* contains the type(s) of the function's output
+* *func_id* is the unique id of the function this AST was generated from.
+* *doc_id* is the document containing the function this AST was generated from. Use this and the *func_id* to query the original source in the *source* MongoDB collection.
 
 Corresponding document in *source* collection:
 ```
