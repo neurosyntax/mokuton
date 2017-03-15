@@ -21,12 +21,6 @@ from ast 		 import nodeVect
 from pymongo     import MongoClient
 from collections import Counter
 
-# True  = function AST excluding template
-# False = AST including the template
-funcOnly = True
-makeVect = True
-saveBoth = True
-
 # Convert string to numeric
 def num(s):
 	try:
@@ -56,14 +50,16 @@ def generateAST(tree):
 		sub.append(str('('))
 		sub.append(str(tree))
 	leaves = ''
-	for n in tree.children:
-		if type(n) == type(list()) and len(n) > 0 and (str(n[0]) in nodes or str(n) in nodes):
-			for e in n:
-				sub.append(generateAST(e))
-		elif str(n) in nodes:
-			sub.append(generateAST(n))
-	sub.append(leaves.strip())
-	sub.append(str(')'))
+	if type(tree).__name__ in nodeVect:
+		for n in tree.children:
+			if type(n) == type(list()) and len(n) > 0 and (str(n[0]) in nodes or str(n) in nodes):
+				for e in n:
+					sub.append(generateAST(e))
+			elif str(n) in nodes:
+				sub.append(generateAST(n))
+		sub.append(leaves.strip())
+		sub.append(str(')'))
+		return sub
 	return sub
 
 # Flatten AST
@@ -78,7 +74,7 @@ def flatten(l):
 # Vectorize AST
 def vectorize(tree):
 	for i, t in enumerate(tree):
-		if key in nodeVect:
+		if t in nodeVect:
 			tree[i] = nodeVect[t]
 	return tree
 
@@ -141,28 +137,26 @@ if __name__ == "__main__":
 	# 	]
 	# }
 	for document in cursor:
+		doc_id = document['_id']
 		for fnc in document['funcs']:
 			global malformed
 			malformed = False
 			sample = {}
 			code   = template(str(fnc['source']))
-			tree   = javalang.parse.parse(code)
-			sample = {'id':fnc['id'], 'intype': str(fnc['intype']), 'outtype': str(fnc['outtype']), 
+			try:
+				tree   = javalang.parse.parse(code)
+			except javalang.parser.JavaSyntaxError:
+				print 'JavaSyntaxError:\n',code
+
+			sample = {'doc_id':doc_id, 'func_id':fnc['id'], 'intype': str(fnc['intype']), 'outtype': str(fnc['outtype']), 
 					  'label':createLabel(fnc['intype'], fnc['outtype'])}
 			
 			sample['ast'] = list(flatten(generateAST(tree)))
+
 			if not malformed:
 				# Remove empty strings, and nodes and parentheses from dumby class
-				if funcOnly:
-					sample['ast'] = [v for v in sample['ast'] if len(v) > 0][4:][:-2]
-
-				if saveBoth:
-					sample['ast']    = ''.join(sample['ast'])
-					sample['astvec'] = vectorize(sample['ast'])
-				elif makeVect:
-					sample['astvec'] = vectorize(sample['ast'])
-				else:
-					sample['ast'] = ''.join(sample['ast'])
+				sample['ast']    = [v for v in sample['ast'] if len(v) > 0][4:][:-2]
+				sample['astvec'] = vectorize(sample['ast'][:])
 
 				db.AST.insert_one(sample)
 			else:
