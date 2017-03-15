@@ -51,8 +51,10 @@ $ python mokuton.py
 
 # Vectorized AST
 ['84', '49', '84', '8', '85', '84', '36', '84', '8', '85', '85', '84', '36', '84', '8', '85', '85', '84', '57', '84', '7', '84', '48', '85', '84', '77', '85', '85', '85', '84', '55', '84', '79', '85', '85', '85']
+```
 
-# Example document in MongoDB AST collection 
+### Example document in MongoDB AST collection 
+```
 { 
 	"_id" : ObjectId("58c8acf01962cf4f27ea2800"), 
 	"astvec" : [ 84, 49, 84, 8, 85, 84, 36, 84, 8, 85, 85, 84, 36, 84, 8, 85, 85, 84, 55, 84, 64, 84, 9, 84, 48, 85, 84, 48, 85, 85, 84, 48, 85, 84, 48, 85, 85, 85, 85 ], 
@@ -64,6 +66,7 @@ $ python mokuton.py
 	"doc_id" : NumberLong("4152135009") 
 }
 ```
+
 * *_id* is the unique if for this document in the AST collection.
 * *astvec* is the vectorized AST. Refer to ast.py for the AST nodes to integer mapping.
 * *ast* is the actual AST.
