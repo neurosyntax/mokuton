@@ -76,14 +76,9 @@ def vectorize(tree):
 			tree[i] = nodeVect[t]
 	return tree
 
-
 # Inject function source into template to satisfy javalang module
 def template(func):
 	return 'public class m{'+func+'}'
-
-# Extracts the function AST out of the template
-def  (tree):
-	return '('+'('.join(tree.split('(')[3:])[:-2]
 
 # Return a 1x14 label vector
 # The left seven indices represent the inputs and the right seven represent outputs
