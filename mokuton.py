@@ -148,7 +148,7 @@ if __name__ == "__main__":
 
 			if not malformed:
 				# Remove empty strings, and nodes and parentheses from dumby class
-				sample['ast']    = [v for v in sample['ast'] if len(v) > 0][6:][:-3]
+				sample['ast']    = [v for v in sample['ast'] if len(v) > 0][4:][:-2]
 				sample['astvec'] = vectorize(sample['ast'][:])
 				db.AST.insert_one(sample)
 			else:
